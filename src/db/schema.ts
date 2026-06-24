@@ -11,6 +11,7 @@ export const Payments = sqliteTable("payments", {
     expiresAt:text("expiresAt").notNull(),
     tier:text("tier").notNull(),
     student:text("student").notNull(),
+    paymentType:text("paymentType").notNull(),
     price:integer("price").notNull().default(0),
     createdAt: text("created_at")
         .notNull()

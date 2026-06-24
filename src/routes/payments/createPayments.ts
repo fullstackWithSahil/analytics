@@ -13,6 +13,7 @@ export async function createPayments(c:Context) {
             expiresAt,
             tier,
             teacher,
+            paymentType,
             student
         } = body;
         const db = drizzle(c.env.DB);
@@ -25,6 +26,7 @@ export async function createPayments(c:Context) {
             tier,
             teacher,
             student,
+            paymentType
         })
         return c.json({
             success: true,

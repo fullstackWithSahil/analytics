@@ -3,6 +3,109 @@ import { Context } from "hono";
 import { Payments } from "../../db/schema";
 import { and, eq, gte, sql } from "drizzle-orm";
 
+
+export async function getRevenueByTier(c: Context) {
+    try {
+        const db = drizzle(c.env.DB);
+        const teacher = c.req.query("teacher");
+        if (!teacher) {
+            return c.json({
+                success: false,
+                message: "Teacher is required",
+            });
+        }
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const product = c.req.query("product");
+        let rows;
+        if (product) {
+        rows = await db
+                .select({
+                    month: sql<string>`
+            strftime('%Y-%m', ${Payments.createdAt})
+            `,
+                    tier: Payments.tier,
+                    revenue: sql<number>`
+            COALESCE(sum(${Payments.price}),0)
+            `,
+                })
+                .from(Payments)
+                .where(
+                    and(
+                        eq(Payments.productType, "communities"),
+                        eq(Payments.productName,product),
+                        eq(Payments.teacher, teacher),
+                        gte(
+                            Payments.createdAt,
+                            oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
+                        ),
+                    ),
+                )
+                .groupBy(
+                    sql`strftime('%Y-%m', ${Payments.createdAt})`,
+                    Payments.tier,
+                );
+        } else {    
+        rows = await db
+                .select({
+                    month: sql<string>`
+            strftime('%Y-%m', ${Payments.createdAt})
+            `,
+                    tier: Payments.tier,
+                    revenue: sql<number>`
+            COALESCE(sum(${Payments.price}),0)
+            `,
+                })
+                .from(Payments)
+                .where(
+                    and(
+                        eq(Payments.productType,"communities"),
+                        eq(Payments.teacher, teacher),
+                        gte(
+                            Payments.createdAt,
+                            oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
+                        ),
+                    ),
+                )
+                .groupBy(
+                    sql`strftime('%Y-%m', ${Payments.createdAt})`,
+                    Payments.tier,
+                );
+        }
+
+        const products = [...new Set(rows.map((row) => row.tier))];
+        const result: any[] = [];
+        const now = new Date();
+        for (let i = 11; i >= 0; i--) {
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const month = `${date.getFullYear()}-${String(
+                date.getMonth() + 1,
+            ).padStart(2, "0")}`;
+            const entry: any = {
+                month,
+            };
+            products.forEach((product) => {
+                entry[product] = 0;
+            });
+            result.push(entry);
+        }
+        rows.forEach((row) => {
+            const month = result.find((r) => r.month === row.month);
+            if (month) {
+                month[row.tier] = Number(row.revenue);
+            }
+        });
+        return c.json({
+            success: true,
+            products,
+            data: result,
+        });
+    } catch (error) {
+        console.error(error);
+        return c.json({success: false},500);
+    }
+}
+
 export async function getBarChart(c: Context) {
     try {
         const db = drizzle(c.env.DB);

@@ -1,0 +1,1 @@
+ALTER TABLE `payments` ADD `paymentType` text NOT NULL;
