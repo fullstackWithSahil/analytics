@@ -1,6 +1,6 @@
 # prod
 dist/
-
+wrangler.json
 # dev
 .yarn/
 !.yarn/releases
@@ -10,6 +10,7 @@ dist/
 .idea/workspace.xml
 .idea/usage.statistics.xml
 .idea/shelf
+wrangler.jsonc
 
 # deps
 node_modules/
@@ -19,6 +20,7 @@ node_modules/
 .env
 .env.production
 .dev.vars
+wrangler.json
 
 # logs
 logs/
