@@ -7,11 +7,11 @@ import { and, eq, gte, sql } from "drizzle-orm";
 export async function getRevenueByTier(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is required",
+                message: "organization is required",
             });
         }
         const oneYearAgo = new Date();
@@ -34,7 +34,7 @@ export async function getRevenueByTier(c: Context) {
                     and(
                         eq(Payments.productType, "communities"),
                         eq(Payments.productName,product),
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         gte(
                             Payments.createdAt,
                             oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
@@ -60,7 +60,7 @@ export async function getRevenueByTier(c: Context) {
                 .where(
                     and(
                         eq(Payments.productType,"communities"),
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         gte(
                             Payments.createdAt,
                             oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
@@ -110,12 +110,12 @@ export async function getBarChart(c: Context) {
     try {
         const db = drizzle(c.env.DB);
 
-        const teacher = c.req.query("teacher");
+        const organization = c.req.query("organization");
 
-        if (!teacher) {
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is a required field",
+                message: "organization is a required field",
             });
         }
 
@@ -130,7 +130,7 @@ export async function getBarChart(c: Context) {
             .from(Payments)
             .where(
                 and(
-                    eq(Payments.teacher, teacher),
+                    eq(Payments.organization, organization),
                     gte(
                         Payments.createdAt,
                         oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
@@ -186,11 +186,11 @@ export async function getBarChart(c: Context) {
 export async function getRevenueByProductType(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is required",
+                message: "organization is required",
             });
         }
         const oneYearAgo = new Date();
@@ -208,7 +208,7 @@ export async function getRevenueByProductType(c: Context) {
             .from(Payments)
             .where(
                 and(
-                    eq(Payments.teacher, teacher),
+                    eq(Payments.organization, organization),
                     gte(
                         Payments.createdAt,
                         oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
@@ -281,11 +281,11 @@ export async function getRevenueByProductType(c: Context) {
 export async function getRevenueByProductName(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is required",
+                message: "organization is required",
             });
         }
         const oneYearAgo = new Date();
@@ -307,7 +307,7 @@ export async function getRevenueByProductName(c: Context) {
                 .where(
                     and(
                         eq(Payments.productType,product),
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         gte(
                             Payments.createdAt,
                             oneYearAgo.toISOString().slice(0, 19).replace("T", " "),
@@ -332,7 +332,7 @@ export async function getRevenueByProductName(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         gte(
                             Payments.createdAt,
                             oneYearAgo.toISOString().slice(0, 19).replace("T", " "),

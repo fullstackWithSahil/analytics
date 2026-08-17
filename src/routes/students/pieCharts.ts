@@ -5,17 +5,16 @@ import { and, eq, sql } from "drizzle-orm";
 
 export async function communitiesTierPie(c: Context) {
     try {
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is a required field",
+                message: "organization is a required field",
             });
         }
         const db = drizzle(c.env.DB);
         const product = c.req.query("product");
         if (!product) {
-            console.log(product);
             const rows = await db
                 .select({
                     count: sql<number>`cast(count(distinct ${Payments.student}) as int)`,
@@ -24,7 +23,7 @@ export async function communitiesTierPie(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType, "communities"),
                     ),
                 )
@@ -39,7 +38,7 @@ export async function communitiesTierPie(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType, "communities"),
                         eq(Payments.productName, product),
                     ),
@@ -56,11 +55,11 @@ export async function communitiesTierPie(c: Context) {
 export async function getStudentsPieProductType(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is a required field",
+                message: "organization is a required field",
             });
         }
         const rows = await db
@@ -69,7 +68,7 @@ export async function getStudentsPieProductType(c: Context) {
                 name: Payments.productType,
             })
             .from(Payments)
-            .where(eq(Payments.teacher, teacher))
+            .where(eq(Payments.organization, organization))
             .groupBy(Payments.productType);
         return c.json({ success: true, data: rows });
     } catch (e) {
@@ -81,11 +80,11 @@ export async function getStudentsPieProductType(c: Context) {
 export async function studentsPieByProduct(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is a required field",
+                message: "organization is a required field",
             });
         }
         const product = c.req.query("product");
@@ -99,7 +98,7 @@ export async function studentsPieByProduct(c: Context) {
                 .where(
                     and(
                         eq(Payments.productType, product),
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                     ),
                 )
                 .groupBy(Payments.productName);
@@ -111,7 +110,7 @@ export async function studentsPieByProduct(c: Context) {
                     name: Payments.productName,
                 })
                 .from(Payments)
-                .where(eq(Payments.teacher, teacher))
+                .where(eq(Payments.organization, organization))
                 .groupBy(Payments.productName);
             return c.json({ success: true, data: rows });
         }

@@ -6,8 +6,8 @@ import { and, eq, sql } from "drizzle-orm";
 export async function revenueByPaymentType(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
                 message: "Teacher is a required field",
@@ -24,7 +24,7 @@ export async function revenueByPaymentType(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType,product)
                     )
                 )
@@ -45,7 +45,7 @@ export async function revenueByPaymentType(c: Context) {
                     type: Payments.paymentType,
                 })
                 .from(Payments)
-                .where(eq(Payments.teacher, teacher))
+                .where(eq(Payments.organization, organization))
                 .groupBy(Payments.paymentType);
     
             const payload = rows.map((iteam) => {
@@ -65,8 +65,8 @@ export async function revenueByPaymentType(c: Context) {
 
 export async function revenueByTiers(c: Context) {
     try {
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
                 message: "Teacher is a required field",
@@ -84,7 +84,7 @@ export async function revenueByTiers(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType, "communities"),
                         eq(Payments.productName,product)
                     )
@@ -108,7 +108,7 @@ export async function revenueByTiers(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType,"communities")
                     )
                 )
@@ -130,8 +130,8 @@ export async function revenueByTiers(c: Context) {
 export async function revenuePieByType(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
                 message: "Teacher is a required field",
@@ -144,7 +144,7 @@ export async function revenuePieByType(c: Context) {
                 type: Payments.productType,
             })
             .from(Payments)
-            .where(eq(Payments.teacher, teacher))
+            .where(eq(Payments.organization, organization))
             .groupBy(Payments.productType);
 
         const payload = rows.map((iteam) => {
@@ -163,8 +163,8 @@ export async function revenuePieByType(c: Context) {
 export async function revenuePieByProduct(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
                 message: "Teacher is a required field",
@@ -181,7 +181,7 @@ export async function revenuePieByProduct(c: Context) {
                 .from(Payments)
                 .where(
                     and(
-                        eq(Payments.teacher, teacher),
+                        eq(Payments.organization, organization),
                         eq(Payments.productType,product)
                     )
                 )
@@ -201,7 +201,7 @@ export async function revenuePieByProduct(c: Context) {
                     name: Payments.productName,
                 })
                 .from(Payments)
-                .where(eq(Payments.teacher, teacher))
+                .where(eq(Payments.organization, organization))
                 .groupBy(Payments.productName);
             const payload = rows.map((iteam) => {
                 return {

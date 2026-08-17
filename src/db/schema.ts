@@ -4,10 +4,10 @@ import { sql } from "drizzle-orm";
 
 export const Payments = sqliteTable("payments", {
     id:integer("id").primaryKey({ autoIncrement: true }),
-    teacher: text("teacher").notNull(),
     product: integer("product").notNull(),
     productName: text("productName").notNull(),
     productType:text("productType").notNull(),
+    organization: text("organization").notNull(),
     expiresAt:text("expiresAt").notNull(),
     tier:text("tier").notNull(),
     student:text("student").notNull(),
@@ -21,12 +21,12 @@ export const Payments = sqliteTable("payments", {
 export const videoEvents = sqliteTable("video_events", {
     id: integer("id").primaryKey({ autoIncrement: true }),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).$defaultFn(() => new Date()),
-    teacher: text("teacher").notNull(),
     student: text("student").notNull(),
     courseId: integer("course_id").notNull(),
     lessonId: integer("lesson_id").notNull(),
     videoId: text("video_id").notNull(),
     sessionId: text("session_id").notNull(),
+    organization: text("organization").notNull(),
     event: text("event", {
         enum: [
         "play",

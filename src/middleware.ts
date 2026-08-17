@@ -4,21 +4,20 @@ import { Context, Next } from "hono";
 export async function middleware(c: Context, next: Next) {
     try {
         const user = getAuth(c);
-        console.log(user.userId)
         if (!user?.userId) {
             return c.json({
                 success: false,
                 message: "You are not logged in"
             }, 401);
         }
-        await next();
-
-        // Now the handler has already executed
-        console.log(c.res);
-        if (c.res.body) {
-            const cloned = c.res.clone();
-            console.log(await cloned.json());
+        const organization = c.req.query("organization");
+        if (user.orgId != organization) {
+            return c.json({
+                success: false,
+                message:"You are not allowed to see this resource"
+            }, 401)
         }
+        await next();
     } catch (err) {
         console.error(err);
         return c.json({

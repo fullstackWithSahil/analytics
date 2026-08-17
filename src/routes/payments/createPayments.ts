@@ -12,7 +12,7 @@ export async function createPayments(c:Context) {
             price,
             expiresAt,
             tier,
-            teacher,
+            organization,
             paymentType,
             student
         } = body;
@@ -21,10 +21,10 @@ export async function createPayments(c:Context) {
             productName,
             product,
             productType,
+            organization,
             price,
             expiresAt,
             tier,
-            teacher,
             student,
             paymentType
         })

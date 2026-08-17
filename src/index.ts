@@ -28,13 +28,15 @@ import { ingestVideoEvents } from './routes/video/ingest';
 import { getViews } from './routes/video/views';
 import { clerkMiddleware } from "@clerk/hono";
 import { middleware } from './middleware';
+import { caching } from './caching';
 
 
-const app = new Hono()
+const app = new Hono<{ Bindings: CloudflareBindings }>()
 
-app.use('/*', clerkMiddleware())
-app.use('/*', middleware)
 app.use('/*', cors());
+app.use('/*', clerkMiddleware())
+app.use('/*',caching)
+app.use('/*', middleware)
 
 
 app.get('/', (c) => {
@@ -65,12 +67,17 @@ app.get("/leads/status",leadStatus);
 app.post("/video/events",ingestVideoEvents);
 app.get("/video/views/:videoId",getViews);
 
+app.get("/public/flush", async (c) => {
+    const keys = await c.env.KV.list();
+    const promises = keys.keys.map((key) => {
+        return c.env.KV.delete(key.name)
+    })
+    await Promise.all(promises)
+    console.log(promises)
+    return c.text("flushed")
+})
 export default app
 
 
 //local
-//bunx wrangler d1 execute --local analytics --file=migrations\0000_big_mantis.sql
-//bunx wrangler d1 execute --local analytics --file=migrations\0001_sour_mandrill.sql
-//bunx wrangler d1 execute --local analytics --file=migrations\0002_funny_blockbuster.sql
-//bunx wrangler d1 execute --local analytics --file=migrations\0003_next_stone_men.sql
-//bunx wrangler d1 execute --local analytics --file=migrations\0004_curvy_silver_surfer.sql
+//bunx wrangler d1 execute --local analytics --file=migrations\0000_wonderful_speedball.sql

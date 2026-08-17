@@ -6,11 +6,11 @@ import { and, eq, gte, sql } from "drizzle-orm";
 export async function studentsBarGraphByProduct(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is required",
+                message: "organization is required",
             });
         }
 
@@ -31,10 +31,10 @@ export async function studentsBarGraphByProduct(c: Context) {
             .where(
                 product
                     ? and(
-                          eq(Payments.teacher, teacher),
+                          eq(Payments.organization, organization),
                           eq(Payments.productType, product)
                       )
-                    : eq(Payments.teacher, teacher)
+                    : eq(Payments.organization, organization)
             )
             .groupBy(
                 Payments.student,
@@ -125,11 +125,11 @@ export async function studentsBarGraphByProduct(c: Context) {
 export async function studentsBarGraphByProductType(c: Context) {
     try {
         const db = drizzle(c.env.DB);
-        const teacher = c.req.query("teacher");
-        if (!teacher) {
+        const organization = c.req.query("organization");
+        if (!organization) {
             return c.json({
                 success: false,
-                message: "Teacher is required",
+                message: "organization is required",
             });
         }
 
@@ -150,10 +150,10 @@ export async function studentsBarGraphByProductType(c: Context) {
             .where(
                 product
                     ? and(
-                          eq(Payments.teacher, teacher),
+                          eq(Payments.organization, organization),
                           eq(Payments.productType, product)
                       )
-                    : eq(Payments.teacher, teacher)
+                    : eq(Payments.organization, organization)
             )
             .groupBy(
                 Payments.student,

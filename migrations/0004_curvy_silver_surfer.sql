@@ -1,1 +1,0 @@
-ALTER TABLE `video_events` ADD `muted` integer;
